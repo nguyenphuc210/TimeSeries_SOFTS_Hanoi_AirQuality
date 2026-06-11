@@ -179,6 +179,7 @@ python main.py \
   --itr 1
 ```
 ## Tham số quan trọng
+```text
 Tham số	Ý nghĩa
 --root_path	Thư mục chứa file dữ liệu
 --data_path	Tên file dữ liệu
@@ -199,7 +200,7 @@ Tham số	Ý nghĩa
 --train_epochs	Số epoch huấn luyện
 --patience	Số epoch chờ trước khi early stopping
 --itr	Số lần lặp thực nghiệm
-
+```
 ## Kết quả thực nghiệm
 
 Các hình trực quan kết quả được lưu trong thư mục:
@@ -214,25 +215,25 @@ Ablation_CO_Pro.png
 Ablation_Time_Pro.png
 ```
 ## Ý nghĩa các hình:
-
+```text
 File	Nội dung
 Hanoi_Prediction.png	Kết quả dự báo PM10, CO và NO2 trên dữ liệu Hà Nội
 ETT_Prediction_Fixed.png	Kết quả dự báo trên bộ dữ liệu ETTm1
 Ablation_CO_Pro.png	Ablation study về tác động của module MLP đối với dự báo CO
 Ablation_Time_Pro.png	Ablation study về tác động của temporal embedding đối với dự báo CO
-
+```
 Bảng tổng hợp kết quả được lưu tại:
 ```text
 results/metrics_summary.csv
 ```
 ## Một số kết quả chính:
-
+```text
 Dataset	Model	seq_len	pred_len	MAE	MSE
 ETTm1	SOFTS	96	96	0.3674	0.3313
 Hanoi Air Quality + Weather	SOFTS	192	24	0.8658	10.1278
 
 Lưu ý: các kết quả so sánh trong từng thí nghiệm có thể khác nhau về cấu hình, biến mục tiêu hoặc thang đo đánh giá. Vì vậy, nên so sánh trực tiếp các mô hình trong cùng một bảng kết quả thay vì so sánh chéo giữa các mục khác nhau.
-
+```
 ## Báo cáo
 
 Báo cáo cuối cùng được lưu trong thư mục:
