@@ -1,0 +1,7 @@
+Dataset,Model,seq_len,pred_len,MAE,MSE,Note
+ETTm1,SOFTS,96,96,0.3674,0.3313,Benchmark dataset
+Hanoi Air Quality + Weather,SOFTS,192,24,0.8658,10.1278,Forecast PM10 CO NO2
+Hanoi PM10,SOFTS,192,24,0.814,8.859,Comparison with DLinear
+Hanoi PM10,DLinear,192,24,0.906,9.061,Comparison baseline
+Hanoi PM10,SOFTS,192,24,8.23,122.39,Comparison with PatchTST
+Hanoi PM10,PatchTST,192,24,9.26,153.42,Comparison baseline
