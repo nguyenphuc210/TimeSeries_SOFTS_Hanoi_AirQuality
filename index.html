@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOFTS - Dự báo ô nhiễm không khí Hà Nội</title>
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-strong: rgba(255, 255, 255, 0.13);
+      --text: #eef6ff;
+      --muted: #b9c7d8;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --border: rgba(255, 255, 255, 0.16);
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), transparent 32%),
+        radial-gradient(circle at top right, rgba(52, 211, 153, 0.18), transparent 28%),
+        linear-gradient(135deg, #07111f 0%, #0f172a 55%, #111827 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 34px 0 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 17, 31, 0.72);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: var(--blue);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+    }
+
+    .hero {
+      padding: 78px 0 52px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.06);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 1.08;
+      margin: 0 0 18px;
+      letter-spacing: -1.5px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--blue), var(--green), var(--yellow));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 0 28px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.08);
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #0ea5e9, #10b981);
+      color: white;
+      border: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metric:last-child {
+      border-bottom: none;
+    }
+
+    .metric span {
+      color: var(--muted);
+    }
+
+    .metric strong {
+      color: var(--text);
+      font-size: 20px;
+    }
+
+    section {
+      padding: 38px 0;
+    }
+
+    .section-title {
+      font-size: 30px;
+      margin: 0 0 12px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      margin: 0 0 22px;
+      max-width: 860px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid.cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #d8f3ff;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+    }
+
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      color: #d8f3ff;
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    td {
+      color: var(--muted);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .figure-card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .figure-card img {
+      width: 100%;
+      display: block;
+      background: white;
+    }
+
+    .figure-caption {
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .members {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .member {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    footer {
+      padding: 32px 0 44px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid,
+      .grid.cols-3,
+      .grid.cols-2,
+      .gallery,
+      .members {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 48px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="container">
+      <div class="brand">SOFTS Air Quality Forecasting</div>
+      <div class="nav-links">
+        <a href="#overview">Tổng quan</a>
+        <a href="#models">Mô hình</a>
+        <a href="#results">Kết quả</a>
+        <a href="#links">Tài liệu</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="tag">Bài tập lớn môn Phân tích chuỗi thời gian</div>
+          <h1>Dự báo ô nhiễm không khí Hà Nội bằng <span class="gradient-text">SOFTS</span></h1>
+          <p class="lead">
+            Dự án xây dựng pipeline dự báo chuỗi thời gian đa biến cho dữ liệu chất lượng không khí và thời tiết Hà Nội.
+            Mô hình chính là SOFTS với module STAR, được so sánh với Transformer, DLinear và PatchTST.
+          </p>
+
+          <div class="buttons">
+            <a class="btn primary" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality" target="_blank">Xem GitHub</a>
+            <a class="btn" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality/blob/main/SOFTS_Hanoi_AirQuality.ipynb" target="_blank">Mở Notebook</a>
+            <a class="btn" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality/tree/main/report" target="_blank">Xem báo cáo</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="metric">
+            <span>Bài toán</span>
+            <strong>Multivariate Forecasting</strong>
+          </div>
+          <div class="metric">
+            <span>Số biến đầu vào</span>
+            <strong>7</strong>
+          </div>
+          <div class="metric">
+            <span>Hanoi pred_len</span>
+            <strong>24</strong>
+          </div>
+          <div class="metric">
+            <span>ETTm1 pred_len</span>
+            <strong>96</strong>
+          </div>
+          <div class="metric">
+            <span>Metric</span>
+            <strong>MSE / MAE</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="overview">
+      <div class="container">
+        <h2 class="section-title">Tổng quan đề tài</h2>
+        <p class="section-desc">
+          Ô nhiễm không khí tại đô thị chịu ảnh hưởng bởi nhiều yếu tố theo thời gian. Đề tài này sử dụng dữ liệu PM10,
+          CO, NO2 kết hợp với temperature, humidity, precipitation và wind_speed để dự báo xu hướng ô nhiễm trong tương lai.
+        </p>
+
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Dữ liệu Hà Nội</h3>
+            <p>Bộ dữ liệu gồm nhóm biến ô nhiễm và nhóm biến thời tiết, dùng để kiểm tra khả năng dự báo trong bối cảnh thực tế.</p>
+            <div class="pill-row">
+              <span class="pill">PM10</span>
+              <span class="pill">CO</span>
+              <span class="pill">NO2</span>
+              <span class="pill">Weather</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Dữ liệu ETTm1</h3>
+            <p>Dataset benchmark được dùng để kiểm chứng mô hình SOFTS trên bài toán dự báo chuỗi thời gian đa biến.</p>
+            <div class="pill-row">
+              <span class="pill">HUFL</span>
+              <span class="pill">HULL</span>
+              <span class="pill">MUFL</span>
+              <span class="pill">OT</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Mục tiêu</h3>
+            <p>Xây dựng pipeline từ tiền xử lý dữ liệu, huấn luyện mô hình, đánh giá bằng MSE/MAE đến trực quan hóa kết quả dự báo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="models">
+      <div class="container">
+        <h2 class="section-title">Mô hình sử dụng</h2>
+        <p class="section-desc">
+          SOFTS được chọn làm mô hình chính và được so sánh với các mô hình baseline phổ biến trong dự báo chuỗi thời gian.
+        </p>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <h3>SOFTS</h3>
+            <p>
+              Mô hình chính sử dụng cơ chế Series-Core Fusion và module STAR để tổng hợp thông tin giữa các biến,
+              sau đó phân phối lại biểu diễn lõi cho từng chuỗi thành phần.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Baseline models</h3>
+            <ul>
+              <li>Transformer: mô hình dựa trên self-attention.</li>
+              <li>DLinear: mô hình tuyến tính dựa trên phân rã trend/seasonal.</li>
+              <li>PatchTST: mô hình Transformer chia chuỗi thời gian thành các patch.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="container">
+        <h2 class="section-title">Kết quả thực nghiệm</h2>
+        <p class="section-desc">
+          Các kết quả dưới đây là kết quả chính được tổng hợp từ notebook thực nghiệm và file báo cáo.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Model</th>
+              <th>seq_len</th>
+              <th>pred_len</th>
+              <th>MAE</th>
+              <th>MSE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ETTm1</td>
+              <td>SOFTS</td>
+              <td>96</td>
+              <td>96</td>
+              <td>0.3674</td>
+              <td>0.3313</td>
+            </tr>
+            <tr>
+              <td>Hanoi Air Quality + Weather</td>
+              <td>SOFTS</td>
+              <td>192</td>
+              <td>24</td>
+              <td>0.8658</td>
+              <td>10.1278</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="gallery" style="margin-top: 24px;">
+          <div class="figure-card">
+            <img src="results/figures/Hanoi_Prediction.png" alt="Kết quả dự báo Hà Nội">
+            <div class="figure-caption"><strong>Hình 1.</strong> Dự báo PM10, CO và NO2 trên dữ liệu Hà Nội.</div>
+          </div>
+
+          <div class="figure-card">
+            <img src="results/figures/ETT_Prediction_Fixed.png" alt="Kết quả dự báo ETTm1">
+            <div class="figure-caption"><strong>Hình 2.</strong> Kết quả dự báo trên bộ dữ liệu ETTm1.</div>
+          </div>
+
+          <div class="figure-card">
+            <img src="results/figures/Ablation_CO_Pro.png" alt="Ablation CO">
+            <div class="figure-caption"><strong>Hình 3.</strong> Ablation study về tác động của module MLP.</div>
+          </div>
+
+          <div class="figure-card">
+            <img src="results/figures/Ablation_Time_Pro.png" alt="Ablation temporal embedding">
+            <div class="figure-caption"><strong>Hình 4.</strong> Ablation study về tác động của temporal embedding.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="links">
+      <div class="container">
+        <h2 class="section-title">Liên kết tài liệu</h2>
+        <div class="grid cols-3">
+          <div class="card">
+            <h3>Notebook</h3>
+            <p>Notebook chứa toàn bộ pipeline thực nghiệm từ tiền xử lý đến đánh giá.</p>
+            <a class="btn" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality/blob/main/SOFTS_Hanoi_AirQuality.ipynb" target="_blank">Mở notebook</a>
+          </div>
+
+          <div class="card">
+            <h3>Dữ liệu</h3>
+            <p>Thư mục lưu dữ liệu ETTm1 và Hanoi Air Quality + Weather.</p>
+            <a class="btn" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality/tree/main/Data_train" target="_blank">Xem dữ liệu</a>
+          </div>
+
+          <div class="card">
+            <h3>Báo cáo</h3>
+            <p>Báo cáo cuối cùng của bài tập lớn môn Phân tích chuỗi thời gian.</p>
+            <a class="btn" href="https://github.com/nguyenphuc210/TimeSeries_SOFTS_Hanoi_AirQuality/tree/main/report" target="_blank">Xem báo cáo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © 2026 - SOFTS Air Quality Forecasting | Time Series Analysis Project
+    </div>
+  </footer>
+</body>
+</html>
